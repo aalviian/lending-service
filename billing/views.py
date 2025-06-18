@@ -1,9 +1,11 @@
 from django.shortcuts import render
 from django.http import HttpResponse
+from rest_framework.permissions import IsAuthenticated, AllowAny
+from django.contrib.auth.models import User
 from rest_framework import generics, status
 from rest_framework.response import Response
 from .models import Loan, Payment, LoanStatus
-from .serializers import LoanSerializer, PaymentSerializer, LoanStatusSerializer, LoanScheduleSerializer
+from .serializers import LoanSerializer, PaymentSerializer, LoanStatusSerializer, LoanScheduleSerializer, UserSerializer
 from django.utils import timezone
 
 
@@ -11,6 +13,7 @@ def index(request):
     return HttpResponse("Hello, world. You're at the polls index.")
 
 class LoanCreateView(generics.CreateAPIView):
+    permission_classes = [IsAuthenticated]
     queryset = Loan.objects.all()
     serializer_class = LoanSerializer
 
@@ -20,11 +23,13 @@ class LoanCreateView(generics.CreateAPIView):
         LoanStatus.objects.create(loan=loan)
 
 class LoanScheduleView(generics.RetrieveAPIView):
+    permission_classes = [IsAuthenticated]
     queryset = Loan.objects.all()
     serializer_class = LoanScheduleSerializer
     lookup_field = 'loan_id'
 
 class OutstandingBalanceView(generics.RetrieveAPIView):
+    permission_classes = [IsAuthenticated]
     queryset = Loan.objects.all()
     serializer_class = LoanSerializer
     lookup_field = 'loan_id'
@@ -38,6 +43,7 @@ class OutstandingBalanceView(generics.RetrieveAPIView):
         return Response({'outstanding_balance': float(outstanding)})
 
 class PaymentCreateView(generics.CreateAPIView):
+    permission_classes = [IsAuthenticated]
     queryset = Payment.objects.all()
     serializer_class = PaymentSerializer
 
@@ -83,6 +89,7 @@ class PaymentCreateView(generics.CreateAPIView):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 class LoanStatusView(generics.RetrieveAPIView):
+    permission_classes = [IsAuthenticated]
     queryset = LoanStatus.objects.all()
     serializer_class = LoanStatusSerializer
 
@@ -90,3 +97,9 @@ class LoanStatusView(generics.RetrieveAPIView):
         loan_id = self.kwargs.get('loan_id')
         loan = Loan.objects.get(loan_id=loan_id)
         return loan.status
+
+
+class UserCreateView(generics.CreateAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    permission_classes = [AllowAny]
