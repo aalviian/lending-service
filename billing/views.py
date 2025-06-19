@@ -67,7 +67,7 @@ class PaymentCreateView(generics.CreateAPIView):
         # Check if payment already exists for this week
         if Payment.objects.filter(loan=loan, week_number=current_week).exists():
             return Response(
-                {"error": f"Payment already exists for current week (Week {current_week})"},
+                {"error": f"Payment already paid for current week (Week {current_week})"},
                 status=status.HTTP_400_BAD_REQUEST
             )
 

@@ -9,25 +9,30 @@ https://docs.djangoproject.com/en/4.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
-
+import os
 from pathlib import Path
+from dotenv import load_dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# Load environment variables from .env file
+load_dotenv(os.path.join(BASE_DIR, '.env'))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-8p6-4punio!b%$6jhi$!7vj0gn#flu!ckgxaezz3@)3(%%rdfc'
+SECRET_KEY = os.getenv('SECRET_KEY')
+if not SECRET_KEY:
+    raise ValueError("SECRET_KEY environment variable not set.")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
 ALLOWED_HOSTS = []
 
-TIME_ZONE = 'Asia/Jakarta'  # Example for Indonesian time
+TIME_ZONE = os.getenv('TIME_ZONE', 'Asia/Jakarta')
 USE_TZ = True  # Always use timezone-aware datetimes
 
 # Application definition
@@ -79,12 +84,25 @@ WSGI_APPLICATION = 'amartha.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
+# Database (Example for PostgreSQL/MySQL, adjust if still using SQLite)
+# If using SQLite and want to configure its path via .env:
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'NAME': BASE_DIR / os.getenv('DB_NAME', 'db.sqlite3'), # Default name if not in .env
     }
 }
+# For other databases like PostgreSQL:
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql_psycopg2', # or mysql.backends.mysql
+#         'NAME': os.getenv('DB_NAME', 'lending_db'),
+#         'USER': os.getenv('DB_USER', 'db_user'),
+#         'PASSWORD': os.getenv('DB_PASSWORD', 'db_password'),
+#         'HOST': os.getenv('DB_HOST', 'localhost'),
+#         'PORT': os.getenv('DB_PORT', ''),
+#     }
+# }
 
 
 # Password validation
@@ -111,7 +129,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = os.getenv('TIME_ZONE', 'Asia/Jakarta')
 
 USE_I18N = True
 
