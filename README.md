@@ -62,7 +62,80 @@ python manage.py runserver
 ```
 The API will now be accessible at http://127.0.0.1:8000/.
 
-API Endpoints
+### 4. User Authentication
+1. Register a New User
+
+This endpoint allows new users to register for the lending service.
+
+* **URL:** `/api/register/`
+* **Method:** `POST`
+* **Permissions:** `AllowAny`
+* **Request Body:**
+    * `username` (string, required)
+    * `password` (string, required)
+    * `email` (string, required)
+
+**cURL Example:**
+
+```bash
+curl -X POST \
+  [http://127.0.0.1:8000/api/register/](http://127.0.0.1:8000/api/register/) \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "username": "your_username",
+    "password": "your_password",
+    "email": "your_email@example.com"
+}'
+```
+
+2. User Login and Token Generation
+
+This endpoint allows registered users to log in and obtain JWT (JSON Web Token) access and refresh tokens. The `access` token should be used for authenticating subsequent API requests.
+
+* **URL:** `/api/login/`
+* **Method:** `POST`
+* **Permissions:** `AllowAny`
+* **Request Body:**
+    * `username` (string, required)
+    * `password` (string, required)
+
+**cURL Example:**
+
+```bash
+curl -X POST \
+  [http://127.0.0.1:8000/api/login/](http://127.0.0.1:8000/api/login/) \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "username": "your_username",
+    "password": "your_password"
+}'
+```
+
+3. Create New Loan
+
+This endpoint allows the creation of a new loan with a specified principal amount. A 50-week repayment plan with a flat 10% interest is automatically generated.
+
+* **URL:** `/billing/loans/`
+* **Method:** `POST`
+* **Permissions:** `IsAuthenticated`
+* **Request Body:**
+    * `loan_id` (string, required): A unique identifier for the loan.
+    * `principal_amount` (decimal, required): The initial amount of the loan.
+
+**cURL Example:**
+
+```bash
+curl -X POST \
+  [http://127.0.0.1:8000/billing/loans/](http://127.0.0.1:8000/billing/loans/) \
+  -H 'Content-Type: application/json' \
+  -H 'Authorization: Bearer <your_access_token>' \
+  -d '{
+    "loan_id": "LOAN-001",
+    "principal_amount": "2000000.00"
+}'
+```
+
+
 # API Endpoints
 
 | Endpoint                          | Method | Description                          | Example Response |

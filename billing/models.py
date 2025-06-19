@@ -35,6 +35,7 @@ class Loan(models.Model):
         days_passed = (timezone.now().date() - self.start_date).days
         return min((days_passed // 7) + 1, self.LOAN_TERM_WEEKS)
 
+    @property
     def get_outstanding_balance(self):
         """Calculate remaining amount to be paid"""
         total_paid = self.payments.aggregate(

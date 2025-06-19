@@ -10,7 +10,7 @@ from django.utils import timezone
 
 
 def index(request):
-    return HttpResponse("Hello, world. You're at the polls index.")
+    return HttpResponse("Hello, world")
 
 class LoanCreateView(generics.CreateAPIView):
     permission_classes = [IsAuthenticated]
@@ -19,7 +19,6 @@ class LoanCreateView(generics.CreateAPIView):
 
     def perform_create(self, serializer):
         loan = serializer.save()
-        # Create a status record for the new loan
         LoanStatus.objects.create(loan=loan)
 
 class LoanScheduleView(generics.RetrieveAPIView):
@@ -36,11 +35,7 @@ class OutstandingBalanceView(generics.RetrieveAPIView):
 
     def retrieve(self, request, *args, **kwargs):
         loan = self.get_object()
-        total_paid = sum(
-            payment.amount for payment in loan.payments.all()
-        )
-        outstanding = loan.total_amount - total_paid
-        return Response({'outstanding_balance': float(outstanding)})
+        return Response({'outstanding_balance': loan.get_outstanding_balance})
 
 class PaymentCreateView(generics.CreateAPIView):
     permission_classes = [IsAuthenticated]
