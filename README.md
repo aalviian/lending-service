@@ -12,6 +12,7 @@ This repository contains a application designed to manage a lending service. It 
 - 📊 **Outstanding Balance Calculation**: Real-time remaining balance
 - 🔐 **SSH Authentication**: Secure GitHub integration
 
+
 ## Tech Stack
 
 - **Backend**: Django 4.2 + Django REST Framework
@@ -62,7 +63,15 @@ python manage.py runserver
 ```
 The API will now be accessible at http://127.0.0.1:8000/.
 
-### 4. User Authentication
+## Sequence Diagram
+<img width="883" alt="Screenshot 2025-06-19 at 17 43 11" src="https://github.com/user-attachments/assets/17d01345-5cd8-4b8f-b91d-e8d2e38efe6e" />
+
+## ERD
+<img width="796" alt="Screenshot 2025-06-19 at 17 50 14" src="https://github.com/user-attachments/assets/6ea6c49d-4484-42da-9df0-4c30da3b0b71" />
+
+
+## APIs
+### User Authentication
 1. Register a New User
 
 This endpoint allows new users to register for the lending service.
@@ -111,7 +120,8 @@ curl -X POST \
 }'
 ```
 
-3. Create New Loan
+### Billing APIs
+1. Create New Loan
 
 This endpoint allows the creation of a new loan with a specified principal amount. A 50-week repayment plan with a flat 10% interest is automatically generated.
 
@@ -135,7 +145,6 @@ curl -X POST \
 }'
 ```
 
-
 # API Endpoints
 
 | Endpoint                          | Method | Description                          | Example Response |
@@ -146,3 +155,23 @@ curl -X POST \
 | `/payments/`                      | POST   | Record payment                     | ```json {"id": 19, "loan": 2, "amount": "44000.00", "payment_date": "2025-06-18T09:54:31.976252Z"}``` |
 | `/loans/<loan_id>/status/`        | GET    | Check delinquency status            | ```json {"is_delinquent": false}``` |
 
+
+### Security Best Practices
+1. Input Validation (prevent SQL Injection, XSS)
+2. Rate Limiting (mencegah DDoS)
+3. Secret Management (Vault, AWS Secrets Manager)
+
+### Compliance & Audit
+1. Logging (track data changes)
+2. GDPR/Data Privacy (enkripsi PII)
+
+### DevOps & Observability
+a. CI/CD Pipeline
+1. GitHub Actions/GitLab CI
+2. Docker & Kubernetes
+3. Infrastructure as Code (Terraform)
+
+b. Monitoring & Alerting
+1. Metrics (Prometheus, Datadog)
+2. Issue alert (Sentry)
+3. Log Aggregation (ELK Stack)
